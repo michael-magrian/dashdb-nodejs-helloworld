@@ -14,11 +14,15 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-var express = require("express");
-var routes = require("./routes");
-var http = require("http");
-var path = require("path");
-var ibmdb = require("ibm_db");
+const express = require("express");
+const routes = require("./routes");
+const http = require("http");
+const path = require("path");
+const ibmdb = require("ibm_db");
+const morgan = require("morgan");
+const methodOverride = require("method-override");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
 require("cf-deployment-tracker-client").track();
 
 var app = express();
@@ -27,12 +31,19 @@ var app = express();
 app.set("port", process.env.PORT || 3000);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
-app.use(express.logger("dev"));
+morgan("tiny");
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(express.cookieParser("your secret here"));
-app.use(express.session());
+app.use(methodOverride("X-HTTP-Method-Override"));
+app.use(cookieParser("your secret here"));
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
 app.use(app.router);
 app.use(express.static(path.join(__dirname, "public")));
 var db2;
@@ -51,7 +62,7 @@ if (process.env.CE_SERVICES) {
   }
 }
 
-if (hasConnect == false) {
+if (!hasConnect) {
   db2 = {
     db: "BLUDB",
     hostname: "xxxx",
