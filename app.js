@@ -23,6 +23,7 @@ const morgan = require("morgan");
 const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const errorhandler = require("errorhandler");
 require("cf-deployment-tracker-client").track();
 
 var app = express();
@@ -44,14 +45,13 @@ app.use(
     cookie: { secure: true },
   })
 );
-app.use(app.router);
 app.use(express.static(path.join(__dirname, "public")));
 var db2;
 var hasConnect = false;
 
 // development only
 if ("development" == app.get("env")) {
-  app.use(express.errorHandler());
+  app.use(errorhandler());
 }
 
 if (process.env.CE_SERVICES) {
