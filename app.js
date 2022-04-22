@@ -44,12 +44,8 @@ if ("development" == app.get("env")) {
   app.use(express.errorHandler());
 }
 
-if (process.env.VCAP_SERVICES) {
-    var env = JSON.parse(process.env.VCAP_SERVICES);
-	if (env['dashDB']) {
-        hasConnect = true;
-		db2 = env['dashDB'][0].credentials;
-	}
+if (process.env.CE_SERVICES) {
+  var env = JSON.parse(process.env.CE_SERVICES);
   if (env["dashDB"]) {
     hasConnect = true;
     db2 = env["dashDB"][0].credentials;
