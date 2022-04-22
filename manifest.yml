@@ -4,14 +4,14 @@ declared-services:
     label: dashDB For Transactions
     plan: Lite
 applications:
-# replace the host variable below with your own unique one, as this one can be already taken
-- name: dashdbnodesample
-  memory: 256M
-  instances: 1
-  path: .
-  host: dashdbnodesample
-  framework: node
-  command:    node app.js
-  buildpack:  sdk-for-nodejs
-  services:
-  - dashDB-nodesample
+  # replace the host variable below with your own unique one, as this one can be already taken
+  - name: dashdbcfex
+    memory: 256M
+    instances: 1
+    path: .
+    host: dashdbcfex
+    framework: node
+    command: node app.js
+    buildpack: sdk-for-nodejs
+    services:
+      - dashDB-nodesample
